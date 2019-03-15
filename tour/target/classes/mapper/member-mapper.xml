@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.autocar.dao.MemberDao">
+	<select id="count" resultType="int">
+		SELECT count(*) FROM member
+	</select>
+
+	<!-- 목록용으로 content 컬럼은 제외, @Param()을 사용해서 parameterType 설정 없음 #{start}는 
+		@Param("start")와 연계, #{end}는 @Param("end")와 연계 -->
+	<select id="getPage" resultType="Member">
+		SELECT user_id, name, user_level, email, phone, address, reg_date
+		FROM (
+			SELECT ROW_NUMBER() OVER (ORDER BY reg_date DESC) AS SEQ,
+				user_id, name, user_level, email, phone, address, reg_date
+			FROM member
+		)
+		WHERE SEQ BETWEEN #{start} AND #{end} ORDER BY user_id DESC
+	</select>
+
+	<select id="findById" parameterType="int" resultType="Member">
+		SELECT * FROM member
+		WHERE user_id=#{userId}
+	</select>
+
+</mapper>

@@ -14,6 +14,7 @@ public class HelloController {
 	public String hello(Model model,
 			@RequestParam(value="name", required=false)String name) {
 		log.info("/hello 호출");
+		
 		model.addAttribute("name", "hong");
 		return "hello";
 	}

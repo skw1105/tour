@@ -18,22 +18,10 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	BoardDao dao;
 	
-	//private List<Board> boardList;
-
 	final static private int PER_PAGE_COUNT = 10;
-	//int maxId = 0;
-
-	public BoardServiceImpl() {
-//		boardList = Collections.synchronizedList(new LinkedList<>());
-//		for (maxId = 1; maxId <= 45; maxId++) {
-//			boardList.add(0, new Board(maxId));
-//		}
-	}
 
 	@Override
 	public PageInfo<Board> getPage(int page) throws Exception {
-		//List<Board> list = new ArrayList<>();
-
 		int start = (page - 1) * PER_PAGE_COUNT;
 		int end = start + PER_PAGE_COUNT;
 
@@ -43,17 +31,6 @@ public class BoardServiceImpl implements BoardService {
 		return new PageInfo<>(totalCount,
 				(int) Math.ceil(totalCount / (double) PER_PAGE_COUNT),
 				page, PER_PAGE_COUNT, list);
-		
-//		if (end > totalCount) {
-//			end = totalCount;
-//		}
-//
-//		for (int i = start; i < end; i++) {
-//			list.add(boardList.get(i));
-//		}
-//
-//		return new PageInfo<>(totalCount, (int) Math.ceil(totalCount / (double) PER_PAGE_COUNT), page, PER_PAGE_COUNT,
-//				list);
 	}
 
 	@Override

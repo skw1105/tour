@@ -17,20 +17,24 @@ import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 @ComponentScan(basePackages = { "edu.autocar" })
 public class MvcConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-		// css, js, 이미지 등의 정적 파일 배치 위치 등록 - 스프링이 처리 않함
+		// css, js, 이미지 등의 정적 파일 배치 위치 등록 - 스프링이 처리 안함
 		registry.addResourceHandler("/resources/**") // 적용 경로 //*이 두개있으면 그 아래 계속해서 다
 				.addResourceLocations("/resources/"); // 웹 경로 // *이 하나있으면 그 바로 아래만 다
 	}
 
+	// view resolver가 servlet dispatcher기능 하는 듯
+	// url을 보고 저 경로에서 .jsp파일을 찾음
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
-		// JSP 뷰 리졸러 설정
+		// JSP view resolver 설정
 		// 뷰 이름 앞,뒤에 붙일 prefix(접두어), surfix(접미어) 설정
 		//registry.jsp("/WEB-INF/views/", ".jsp"); // 이게 없으면 /hello라는 주소에 대한 게 없다.? -> 404에러
 		// 이걸 주석처리 해야 190314 레이아웃 적용된거 나옴 
 		
 		TilesViewResolver viewResolver = new TilesViewResolver();
 		registry.viewResolver(viewResolver);
+		
+		registry.jsp("/WEB-INF/views/", ".jsp");
 	}
 	
 	@Bean

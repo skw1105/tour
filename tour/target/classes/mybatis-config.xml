@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<properties resource="database.properties" />
+
+	<settings>
+		<setting name="cacheEnabled" value="false" />
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<setting name="useGeneratedKeys" value="false" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="edu.autocar.domain.Board" alias="Board" />
+		<typeAlias type="edu.autocar.domain.Member" alias="Member" />
+	</typeAliases>
+
+
+
+	<mappers>
+		<mapper resource="mapper/board-mapper.xml" />
+		<mapper resource="mapper/member-mapper.xml" />
+	</mappers>
+</configuration>
