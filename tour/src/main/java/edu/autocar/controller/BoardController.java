@@ -49,15 +49,19 @@ public class BoardController {
 	}
 
 	@GetMapping("/view/{boardId}")
-	public void view(@PathVariable int boardId, Model model) throws Exception {
+	public String view(@PathVariable int boardId, Model model) throws Exception {
 		Board board = service.getBoard(boardId);
 		model.addAttribute("board", board);
+		
+		return "board/view";
 	}
 
 	@GetMapping("/edit/{boardId}") // GET요청 처리
-	public void getEdit(@PathVariable int boardId, Model model) throws Exception {
+	public String getEdit(@PathVariable int boardId, Model model) throws Exception {
 		Board board = service.getBoard(boardId);
 		model.addAttribute("board", board);
+		
+		return "board/edit";
 	}
 
 	@PostMapping("/edit/{boardId}") // POST요청 처리

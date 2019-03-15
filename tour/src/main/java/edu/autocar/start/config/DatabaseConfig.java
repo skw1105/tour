@@ -51,10 +51,13 @@ public class DatabaseConfig { // (Dao구현 필요 없음)
 					new PathMatchingResourcePatternResolver()
 					.getResources("classpath:mapper/*.xml")
 				);
+		
 		// MyBatis 설정
-		org.apache.ibatis.session.Configuration config = sessionFactory.getObject().getConfiguration();
+		org.apache.ibatis.session.Configuration config = 
+				sessionFactory.getObject().getConfiguration();
 		config.setMapUnderscoreToCamelCase(true);
 		config.setCacheEnabled(false);
+		
 		return sessionFactory.getObject();
 	}
 }
