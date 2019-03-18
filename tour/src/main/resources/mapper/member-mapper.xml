@@ -9,18 +9,47 @@
 	<!-- 목록용으로 content 컬럼은 제외, @Param()을 사용해서 parameterType 설정 없음 #{start}는 
 		@Param("start")와 연계, #{end}는 @Param("end")와 연계 -->
 	<select id="getPage" resultType="Member">
-		SELECT user_id, name, user_level, email, phone, address, reg_date
+		SELECT user_id, name, email, phone, reg_date
 		FROM (
 			SELECT ROW_NUMBER() OVER (ORDER BY reg_date DESC) AS SEQ,
-				user_id, name, user_level, email, phone, address, reg_date
-			FROM member
+				user_id, name, email, phone, reg_date
+			FROM MEMBER
 		)
-		WHERE SEQ BETWEEN #{start} AND #{end} ORDER BY user_id DESC
+		WHERE SEQ BETWEEN #{start} AND #{end} ORDER BY reg_date DESC
 	</select>
 
-	<select id="findById" parameterType="int" resultType="Member">
-		SELECT * FROM member
+	<select id="findById" resultType="Member">
+		SELECT *
+		FROM member
 		WHERE user_id=#{userId}
 	</select>
+	
+	<insert id="insert" parameterType="Member">
+		INSERT INTO member( user_id, password, salt, name,
+			user_level, email, phone, address, reg_date, update_date )
+		VALUES( #{userId}, #{password}, #{salt}, #{name},
+			#{userLevel}, #{email}, #{phone}, #{address}, sysdate, sysdate )
+	</insert>
+
+	<update id="update" parameterType="Member">
+		UPDATE member SET email = #{email},
+			phone = #{phone},
+			address = #{address}
+		WHERE user_id=#{userId}
+	</update>
+	
+	<update id="updateByAdmin" parameterType="Member">
+		UPDATE member
+		SET user_level = #{userLevel},
+			email = #{email},
+			phone = #{phone},
+			address = #{address}
+		WHERE user_id=#{userId}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM MEMBER
+		WHERE user_id=#{userId}
+	</delete>
 
 </mapper>

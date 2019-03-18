@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.autocar.dao.MemberDao;
 import edu.autocar.domain.Member;
 import edu.autocar.domain.PageInfo;
+import edu.autocar.util.SHA256Util;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,10 +26,10 @@ public class MemberServiceImpl implements MemberService {
 		int start = (page - 1) * PER_PAGE_COUNT;
 		int end = start + PER_PAGE_COUNT;
 
-		int totalCount = dao.count(); //boardList.size();
+		int totalCount = dao.count();
 		List<Member> list = dao.getPage(start, end);
 		
-		System.out.println("start: " + start + ", end: " + end + ", totalCount: ");
+		//System.out.println("start: " + start + ", end: " + end + ", totalCount: ");
 
 		return new PageInfo<>(totalCount,
 				(int) Math.ceil(totalCount / (double) PER_PAGE_COUNT),
@@ -36,27 +37,49 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	@Transactional
-	public Member getMember(int userId) throws Exception {
+	public Member getMember(String userId) throws Exception {
 		return dao.findById(userId);
 	}
 
-	@Override
 	@Transactional
+	@Override
 	public void create(Member member) throws Exception {
+		// salt 생성 및 비밀번호 암호화
+		String salt = SHA256Util.generateSalt();
+		String encPassword = SHA256Util.getEncrypt(member.getPassword(), salt);
+		member.setSalt(salt);
+		member.setPassword(encPassword);
 		dao.insert(member);
 	}
 
 	@Override
-	@Transactional
 	public boolean update(Member member) throws Exception {
-		return dao.update(member) == 1;
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	@Override
 	@Transactional
-	public boolean delete(int userId, String password) throws Exception {
-		return dao.delete(userId, password) == 1;
+	@Override
+	public boolean updateByAdmin(Member member) throws Exception {
+		if (!checkAdminPassword(member.getPassword()))
+			return false;
+		return dao.updateByAdmin(member) == 1;
 	}
 
+	@Transactional
+	@Override
+	public boolean delete(String userId, String password) throws Exception {
+		if(!checkAdminPassword(password)) return false;
+		
+		return dao.delete(userId) == 1;
+	}
+	
+	private boolean checkAdminPassword(String password) throws Exception{
+		Member admin = dao.findById("admin");
+		String adminPassword = admin.getPassword();
+		password = SHA256Util.getEncrypt(
+				password, // 입력받은 비밀번호
+				admin.getSalt()); // admin의 salt
+		return adminPassword.equals(password);
+	}
 }
