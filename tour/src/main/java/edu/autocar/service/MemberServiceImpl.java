@@ -52,10 +52,13 @@ public class MemberServiceImpl implements MemberService {
 		dao.insert(member);
 	}
 
+	@Transactional
 	@Override
 	public boolean update(Member member) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+		if (checkPassword(member.getUserId(), member.getPassword()) == null)
+			return false;
+		
+		return dao.update(member) == 1;
 	}
 
 	@Transactional
@@ -81,5 +84,17 @@ public class MemberServiceImpl implements MemberService {
 				password, // 입력받은 비밀번호
 				admin.getSalt()); // admin의 salt
 		return adminPassword.equals(password);
+	}
+	
+	@Override
+	public Member checkPassword(String userId, String password) throws Exception {
+		Member user = dao.findById(userId);
+		if (user != null) { // 사용자 ID가 존재하는 경우
+			password = SHA256Util.getEncrypt(password, user.getSalt());
+			if (password.equals(user.getPassword()))
+				return user;
+		}
+		// ID가 없거나 비밀번호가 다른 경우
+		return null;
 	}
 }

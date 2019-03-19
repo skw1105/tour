@@ -70,8 +70,11 @@ $(function(){
 			</td>
 			<td class="text-right">
 				<a href="edit/${member.userId}?page=${pi.page}"
-					class="btn btn-danger btn-sm delete"
+					class="btn btn-danger btn-sm edit"
 					data-user-id="${member.userId}">수정</a>
+				<a href="delete/${member.userId}?page=${pi.page}"
+					class="btn btn-danger btn-sm delete"
+					data-user-id="${member.userId}">삭제</a>
 			</td>
 		</tr>
 	</c:forEach>

@@ -5,11 +5,15 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
+
+import edu.autocar.interceptor.AdminInterceptor;
+import edu.autocar.interceptor.LoginInterceptor;
 
 @Configuration
 @EnableWebMvc
@@ -45,4 +49,34 @@ public class MvcConfig implements WebMvcConfigurer {
 		
 		return tilesConfigurer;
 	}
+	
+	@Bean
+	public LoginInterceptor loginInterceptor() {
+		return new LoginInterceptor();
+	}
+
+	@Bean
+	public AdminInterceptor adminInterceptor() {
+		return new AdminInterceptor();
+	}
+
+	// 인터셉터 등록
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(loginInterceptor()) // 인터셉터 등록
+				.addPathPatterns(new String[] { // 적용 url 패턴
+						"/member/**",
+						"/admin/**",
+						"/board/*"})
+				.excludePathPatterns(new String[] { // 제외 url 패턴
+						"/board/list",
+						"/board/view"});
+		
+		registry.addInterceptor(adminInterceptor()) // 인터셉터 등록
+				.addPathPatterns("/admin/**"); // 적용 url 패턴
+	}
+	
 }
+
+
+

@@ -16,4 +16,6 @@ public interface MemberService {
 	
 	// 관리자만 삭제 가능 - 비밀번호는 관리자의 비밀번호
 	boolean delete(String userId, String password) throws Exception;
+	
+	public Member checkPassword(String userId, String password) throws Exception;
 }

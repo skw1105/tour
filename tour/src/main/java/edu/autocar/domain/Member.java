@@ -38,4 +38,9 @@ public class Member {
 	public Member() {
 		userLevel = UserLevel.NORMAL;
 	}
+	
+	// 관리자 여부 판단
+	public boolean isAdmin() {
+		return userLevel == UserLevel.ADMIN;
+	}
 }
